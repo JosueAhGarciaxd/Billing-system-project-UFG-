@@ -19,13 +19,17 @@ menu_precios = [1.50, 6.00, 5.50, 3.00, 1.00]
 #PERSISTENCIA (determinar número de factura)
 ARCHIVO_FACTURAS = "facturas.txt"
 
+#Intentamos leer el archivo de facturas para determinar el número de la próxima factura
 try:
     with open(ARCHIVO_FACTURAS, "r", encoding="utf-8") as f:
         lineas = f.readlines()
         numero_factura = 1
+
+        # Recorremos cada línea buscando las que digan "Factura #"
         for linea in lineas:
             if linea.startswith("Factura #"):
                 numero_factura = int(linea.split("#")[1].strip()) + 1
+#Si el archivo no existe, asumimos que es la primera factura (Es la primera vez que se ejecuta el programa)
 except FileNotFoundError:
     numero_factura = 1   #Primera vez, el archivo se creará al guardar
 
@@ -35,6 +39,7 @@ except FileNotFoundError:
 print("**************************************")
 print("         RESTAURANTE UFG              ")
 print("**************************************")
+#Pausa para que el usuario pueda leer el encabezado (time.sleep() hace que el programa espere un número de segundos antes de continuar)
 time.sleep(3)
 print("           MENÚ DEL DÍA              ")
 print("--------------------------------------")
@@ -43,16 +48,19 @@ print("--------------------------------------")
 
 for i in range(5):
     print(f"{i+1}   {menu_nombres[i]:<25} ${menu_precios[i]:.2f}")
-
 print("======================================")
 
 #TOMAR EL PEDIDO
 #Arreglos paralelos del pedido
+#pedido_plato: guarda el índice (número de posición) del plato elegido
 pedido_plato    = []   #guarda el índice del plato (0-4)
+#pedido_cantidad: guarda cuántas unidades de ese plato quiere el cliente
 pedido_cantidad = []   #guarda la cantidad pedida
 
 continuar = "si"
 
+#El ciclo se repetirá mientras el cliente quiera seguir agregando platos al pedido. El cliente puede escribir "si" o "no" para indicar si desea continuar o no. 
+#El programa acepta cualquier variación de "si" (como "Si", "SI", "sI") gracias al uso de .lower() que convierte la entrada a minúsculas antes de compararla con "si".
 while continuar.lower() == "si":
 
     #Pedir y validar opción del menú
@@ -83,8 +91,11 @@ while continuar.lower() == "si":
     print("Plato agregado al pedido.")
 
     continuar = input("¿Desea agregar otro plato? (si/no): ").strip()
+    #.strip() elimina espacios en blanco al inicio y al final del texto ingresado
 
 time.sleep(3)
+
+#"cls" limpia la pantalla en Windows, "clear" la limpia en Linux/Mac
 os.system("cls" if os.name == "nt" else "clear")
 
 
@@ -124,9 +135,11 @@ print("======================================")
 # PENDIENTE: Persistencia de datos (guardar factura en un archivo de texto)
 # PERSISTENCIA: GUARDAR FACTURA
 
+#Obtenemos la fecha y hora actual con el formato "día/mes/año hora:minuto:segundo"
 fecha_hora = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
 with open(ARCHIVO_FACTURAS, "a", encoding="utf-8") as f:
+    #f.write() escribe una línea en el archivo (equivalente a print() pero en el archivo)
     f.write(f"Factura #{numero_factura}\n")
     f.write(f"Fecha y hora: {fecha_hora}\n")
     f.write("--------------------------------------\n")
@@ -140,6 +153,7 @@ with open(ARCHIVO_FACTURAS, "a", encoding="utf-8") as f:
         linea    = precio * cantidad
         f.write(f"{menu_nombres[idx]:<25} x{cantidad:>4}      ${linea:.2f}\n")
 
+    #Escribimos los totales al final de la factura
     f.write("--------------------------------------\n")
     f.write(f"Subtotal:             ${subtotal:.2f}\n")
     f.write(f"IVA (13%):            ${impuesto:.2f}\n")
@@ -148,6 +162,7 @@ with open(ARCHIVO_FACTURAS, "a", encoding="utf-8") as f:
     f.write("======================================\n")
     f.write("\n")
 
+#Mensaje final de confirmación en pantalla
 print(f"\nFactura #{numero_factura} guardada en '{ARCHIVO_FACTURAS}'")
 print("\nGracias por visitar el restaurante UFG")
 print("Regrese Pronto :D")
