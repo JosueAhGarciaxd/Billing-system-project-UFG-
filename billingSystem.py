@@ -61,7 +61,7 @@ continuar = "si"
 
 #El ciclo se repetirá mientras el cliente quiera seguir agregando platos al pedido. El cliente puede escribir "si" o "no" para indicar si desea continuar o no. 
 #El programa acepta cualquier variación de "si" (como "Si", "SI", "sI") gracias al uso de .lower() que convierte la entrada a minúsculas antes de compararla con "si".
-while continuar.lower() == "si":
+while continuar == "si":
 
     #Pedir y validar opción del menú
     while True:
@@ -90,8 +90,14 @@ while continuar.lower() == "si":
     pedido_cantidad.append(cantidad)
     print("Plato agregado al pedido.")
 
-    continuar = input("¿Desea agregar otro plato? (si/no): ").strip()
-    #.strip() elimina espacios en blanco al inicio y al final del texto ingresado
+    # Validación:bucle que repite la pregunta si la respuesta no es "si" o "no"
+    while True:
+        continuar = input("¿Desea agregar otro plato? (si/no): ").strip().lower()
+        #.strip() elimina espacios en blanco al inicio y al final del texto ingresado
+        #.lower() convierte la entrada a minúsculas para aceptar "Si", "SI", "sI", etc.
+        if continuar in ("si", "no"):
+            break   #Salimos del bucle solo si la respuesta es válida
+        print("Opción inválida. Por favor, ingrese 'si' o 'no'.")
 
 time.sleep(3)
 
