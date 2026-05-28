@@ -17,7 +17,7 @@ menu_nombres = [
 menu_precios = [1.50, 6.00, 5.50, 3.00, 1.00]
 
 #PERSISTENCIA (determinar número de factura)
-ARCHIVO_FACTURAS = "facturas.txt"
+ARCHIVO_FACTURAS = "FacturasUFG.txt"
 
 #Intentamos leer el archivo de facturas para determinar el número de la próxima factura
 try:
@@ -25,7 +25,7 @@ try:
         lineas = f.readlines()
         numero_factura = 1
 
-        # Recorremos cada línea buscando las que digan "Factura #"
+        #Recorremos cada línea buscando las que digan "Factura #"
         for linea in lineas:
             if linea.startswith("Factura #"):
                 numero_factura = int(linea.split("#")[1].strip()) + 1
@@ -35,7 +35,7 @@ except FileNotFoundError:
 
 
 
-# Mostrar encabezado
+#Mostrar encabezado
 print("**************************************")
 print("         RESTAURANTE UFG              ")
 print("**************************************")
@@ -72,18 +72,18 @@ while continuar == "si":
             else:
                 break
         except ValueError:
-            print("Por favor ingrese un número válido.")
+            print("Por favor ingrese un carácter válido.")
 
     #Pedir y validar cantidad
     while True:
         try:
             cantidad = int(input(f"¿Cuántas unidades de {menu_nombres[opcion-1]} desea? "))
-            if cantidad <= 0:
-                print("La cantidad debe ser mayor a 0.")
+            if cantidad < 1 or cantidad > 200:
+                print("Cantidad inválida. Por favor elija un rango entre 1 y 200 unidades.")
             else:
                 break
         except ValueError:
-            print("Por favor ingrese un número válido.")
+            print("Por favor ingrese un carácter válido.")
 
     #Guardar en los arreglos paralelos
     pedido_plato.append(opcion - 1)   #convertimos a índice 0-4
@@ -94,7 +94,7 @@ while continuar == "si":
     while True:
         continuar = input("¿Desea agregar otro plato? (si/no): ").strip().lower()
         #.strip() elimina espacios en blanco al inicio y al final del texto ingresado
-        #.lower() convierte la entrada a minúsculas para aceptar "Si", "SI", "sI", etc.
+        #.lower() converts la entrada a minúsculas para aceptar "Si", "SI", "sI", etc.
         if continuar in ("si", "no"):
             break   #Salimos del bucle solo si la respuesta es válida
         print("Opción inválida. Por favor, ingrese 'si' o 'no'.")
@@ -170,5 +170,8 @@ with open(ARCHIVO_FACTURAS, "a", encoding="utf-8") as f:
 
 #Mensaje final de confirmación en pantalla
 print(f"\nFactura #{numero_factura} guardada en '{ARCHIVO_FACTURAS}'")
+
+time.sleep(3)
 print("\nGracias por visitar el restaurante UFG")
 print("Regrese Pronto :D")
+print("\n")
